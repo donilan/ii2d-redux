@@ -11,10 +11,10 @@ import routes from '../common/routes';
 import "bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 import '../common/style/app.scss';
 
+
 const initialState = window.__INITIAL_STATE__;
 const store = configureStore(initialState);
 const history = browserHistory;
-
 
 ReactDOM.render(
   <Provider store={store}>
