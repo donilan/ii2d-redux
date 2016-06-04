@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import promiseMiddleware from 'redux-promise';
 import createLogger from 'redux-logger';
 import DevTools from '../containers/DevTools';
 import rootReducer from '../reducers';
@@ -12,7 +11,7 @@ const loggerMiddleware = createLogger({
 });
 
 const finalCreateStore = compose(
-  applyMiddleware(thunkMiddleware, promiseMiddleware, loggerMiddleware),
+  applyMiddleware(thunkMiddleware, loggerMiddleware),
   DevTools.instrument()
 )(createStore);
 

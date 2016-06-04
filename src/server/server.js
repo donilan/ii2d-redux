@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -16,33 +17,18 @@ import routes from '../common/routes';
 import configureStore from '../common/store/configureStore';
 
 const app = express();
-const renderFullPage = (html, initialState) => {
-  let css = process.env.NODE_ENV === 'production' ? '<link rel="stylesheet" type="text/css" href="/static/app.css">' : '';
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport" />
-        <title>II2D</title>
-        ${css}
-      </head>
-      <body>
-        <div id="root">${html}</div>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
-        </script>
-        <script src="/static/app.js"></script>
-      </body>
-    </html>
-  `;
-}
+app.set('views', path.join(__dirname, '../client'));
+app.set('view engine', 'jade');
 
-if(process.env.NODE_ENV === 'production'){
-  app.use('/static', express.static(__dirname + '/../../www'));
-}else{
+if(process.env.NODE_ENV !== 'production'){
   const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    noInfo: true,
+    stats: {
+      colors: true
+    }
+  }));
   app.use(webpackHotMiddleware(compiler));
 }
 
@@ -63,11 +49,14 @@ app.get('/*', function (req, res) {
             <RouterContext {...renderProps} />
           </Provider>
         );
-        res.status(200).end(renderFullPage(renderToString(InitialView), store.getState()));
+        res.render('index', {
+          content: renderToString(InitialView),
+          state: JSON.stringify(store.getState())
+        });
       }
     });
   } else {
-    res.status(200).end(renderFullPage('', {}));
+    res.render('index', {content: '', state: JSON.stringify({})});
   }
 })
 
