@@ -3,6 +3,18 @@ var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+var VENDORS = [
+  'react',
+  'react-redux',
+  'redux',
+  'react-router',
+  'lodash',
+  'history',
+  'react-router-redux',
+  'redux-thunk',
+  'react-bootstrap'
+]
+
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
@@ -11,7 +23,10 @@ var plugins = [
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
     }
   }),
-
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    filname: 'vendor.js'
+  })
 ];
 
 var loaders = [
@@ -30,36 +45,40 @@ var webpackConfig = {
   devtool: false,
   output: {
     path: path.join(__dirname, 'public/dist/'),
-    filename: 'app.js',
+    filename: '[name].js',
     publicPath: '/dist/'
   }
 };
 
 if (process.env.NODE_ENV === 'production') {
   plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+  plugins.push(new ExtractTextPlugin("app.css"));
   loaders.push({
     test: /\.scss$/,
     loader: ExtractTextPlugin.extract('style', 'css!sass')
   });
   webpackConfig = _.extend(webpackConfig, {
-    entry : [
-      './src/client/index.js'
-    ],
+    entry : {
+      app: './src/client/index.js',
+      vendor: VENDORS
+    },
     plugins : plugins
   });
 } else {
   plugins.push(new webpack.HotModuleReplacementPlugin());
-  plugins.push(  new ExtractTextPlugin("app.css"));
   loaders.push({
     test: /\.scss$/,
     loader: 'style!css!sass'
   });
   webpackConfig = _.extend(webpackConfig, {
     devtool: 'eval',
-    entry : [
-      './src/client/index.js',
-      'webpack-hot-middleware/client?reload=true'
-    ],
+    entry : {
+      app: [
+        './src/client/index.js',
+        'webpack-hot-middleware/client?reload=true'
+      ],
+      vendor: VENDORS
+    },
     plugins: plugins
   });
 }
