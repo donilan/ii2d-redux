@@ -29,9 +29,9 @@ var loaders = [
 var webpackConfig = {
   devtool: false,
   output: {
-    path: path.join(__dirname, 'public/javascripts/'),
+    path: path.join(__dirname, 'public/dist/'),
     filename: 'app.js',
-    publicPath: '/javascripts/'
+    publicPath: '/dist/'
   }
 };
 
