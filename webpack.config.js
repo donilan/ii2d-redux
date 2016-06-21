@@ -3,18 +3,6 @@ var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var VENDORS = [
-  'react',
-  'react-redux',
-  'redux',
-  'react-router',
-  'lodash',
-  'history',
-  'react-router-redux',
-  'redux-thunk',
-  'react-bootstrap'
-]
-
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
@@ -22,10 +10,6 @@ var plugins = [
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
     }
-  }),
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    filname: 'vendor.js'
   })
 ];
 
@@ -59,8 +43,7 @@ if (process.env.NODE_ENV === 'production') {
   });
   webpackConfig = _.extend(webpackConfig, {
     entry : {
-      app: './src/client/index.js',
-      vendor: VENDORS
+      app: './src/client/index.js'
     },
     plugins : plugins
   });
@@ -76,8 +59,7 @@ if (process.env.NODE_ENV === 'production') {
       app: [
         './src/client/index.js',
         'webpack-hot-middleware/client?reload=true'
-      ],
-      vendor: VENDORS
+      ]
     },
     plugins: plugins
   });

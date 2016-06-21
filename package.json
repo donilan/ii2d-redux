@@ -5,7 +5,7 @@
   "homepage": "https://github.com/donilan/ii2d-redux",
   "scripts": {
     "start": "NODE_ENV=develment node src/server/index.js --progress --colors --profile",
-    "clean": "rm -rf public/javascripts/*",
+    "clean": "rm -rf public/dist/*",
     "slate": "rm -rf node_modules && npm install",
     "start-prod": "NODE_ENV=production node src/server/index.js --progress --colors --profile",
     "build": "npm run clean && NODE_ENV=production webpack -p --progress --colors --profile",
