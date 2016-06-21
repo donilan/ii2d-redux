@@ -2,17 +2,18 @@ var path = require('path');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+var DEV = process.env.NODE_ENV !== 'production';
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
+  new ExtractTextPlugin("app.css"),
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
     }
   })
 ];
-
+var entries = ['./src/client/index.js'];
 var loaders = [
   {
     test: /\.js$/,
@@ -22,47 +23,28 @@ var loaders = [
   {
     test: /\.(png|jpg|ttf|eot|svg|woff2|woff)$/,
     loader: 'url?limit=25000'
-  }
-]
-
-var webpackConfig = {
-  devtool: false,
-  output: {
-    path: path.join(__dirname, 'public/dist/'),
-    filename: '[name].js',
-    publicPath: '/dist/'
-  }
-};
-
-if (process.env.NODE_ENV === 'production') {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
-  plugins.push(new ExtractTextPlugin("app.css"));
-  loaders.push({
+  },
+  {
     test: /\.scss$/,
     loader: ExtractTextPlugin.extract('style', 'css!sass')
-  });
-  webpackConfig = _.extend(webpackConfig, {
-    entry : {
-      app: './src/client/index.js'
-    },
-    plugins : plugins
-  });
-} else {
+  }
+];
+
+if(DEV) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
-  loaders.push({
-    test: /\.scss$/,
-    loader: 'style!css!sass'
-  });
-  webpackConfig = _.extend(webpackConfig, {
-    devtool: 'eval',
-    entry : {
-      app: [
-        './src/client/index.js',
-        'webpack-hot-middleware/client?reload=true'
-      ]
-    },
-    plugins: plugins
-  });
+  entries.push('webpack-hot-middleware/client?reload=true');
+} else {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
 }
-webpackConfig.module = {loaders: loaders};
-module.exports = webpackConfig;
+
+module.exports = {
+  devtool: DEV ? 'eval' : false,
+  entry: entries,
+  output: {
+    path: path.join(__dirname, 'public/dist/'),
+    filename: 'app.js',
+    publicPath: '/dist/'
+  },
+  module: {loaders: loaders},
+  plugins: plugins,
+};

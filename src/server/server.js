@@ -32,7 +32,7 @@ if(process.env.NODE_ENV !== 'production'){
 }
 
 app.get('/*', function (req, res) {
-  if(process.env.NODE_ENV === 'production' || process.env.SERVER_RENDER){
+  if(process.env.NODE_ENV === 'production' || process.env.SERVER_RENDERING){
     let routes = createRoutes(memoryHistory);
     match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
       if (error) {
