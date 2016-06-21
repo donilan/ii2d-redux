@@ -9,11 +9,10 @@ import webpackConfig from '../../webpack.config';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 
-import { RouterContext, match } from 'react-router';
+import { RouterContext, match, memoryHistory } from 'react-router';
 import { Provider } from 'react-redux';
-import createLocation from 'history/lib/createLocation';
 
-import routes from '../common/routes';
+import createRoutes from '../common/routes';
 import configureStore from '../common/store/configureStore';
 
 const app = express();
@@ -34,15 +33,13 @@ if(process.env.NODE_ENV !== 'production'){
 
 app.get('/*', function (req, res) {
   if(process.env.NODE_ENV === 'production' || process.env.SERVER_RENDER){
-    let location = createLocation(req.url);
-    match({ routes, location }, (error, redirectLocation, renderProps) => {
-      if (redirectLocation) {
-        res.redirect(301, redirectLocation.pathname + redirectLocation.search);
-      } else if (error) {
-        res.status(500).send(error.message);
-      } else if (renderProps == null) {
-        res.status(404).send('Not found')
-      } else {
+    let routes = createRoutes(memoryHistory);
+    match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+      if (error) {
+        res.status(500).send(error.message)
+      } else if (redirectLocation) {
+        res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+      } else if (renderProps) {
         const store = configureStore();
         const InitialView = (
           <Provider store={store}>
@@ -53,6 +50,8 @@ app.get('/*', function (req, res) {
           content: renderToString(InitialView),
           state: JSON.stringify(store.getState())
         });
+      } else {
+        res.status(404).send('Not found')
       }
     });
   } else {
