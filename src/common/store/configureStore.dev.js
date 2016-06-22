@@ -3,8 +3,7 @@ import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import DevTools from '../containers/DevTools';
 import rootReducer from '../reducers';
-
-
+import { persistState } from 'redux-devtools';
 const loggerMiddleware = createLogger({
   level: 'info',
   collapsed: true
@@ -12,7 +11,8 @@ const loggerMiddleware = createLogger({
 
 const finalCreateStore = compose(
   applyMiddleware(thunkMiddleware, loggerMiddleware),
-  DevTools.instrument()
+  DevTools.instrument(),
+  persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
 )(createStore);
 
 
