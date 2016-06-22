@@ -19,7 +19,7 @@ export default class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <li><Link to="/">Home</Link></li>
+              <li><Link to="/counter">Counter</Link></li>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

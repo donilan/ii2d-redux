@@ -9,7 +9,11 @@ var plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-    }
+    },
+    __CLIENT__: true,
+    __SERVER__: false,
+    __DEVELOPMENT__: DEV,
+    __DEVTOOLS__: true
   })
 ];
 var entries = ['./src/client/index.js'];

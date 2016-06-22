@@ -3,13 +3,15 @@ import React from "react";
 
 import App from "./containers/App";
 import Home from './containers/Home';
+import Counter from './containers/Counter';
 import NoMatch from './containers/NoMatch';
 
 export default function(history) {
   return (
     <Router history={history} >
       <Route path="/" component={App}>
-        <IndexRoute name="home" component={Home} />
+        <IndexRoute component={Home} />
+        <Route path="counter" component={Counter} />
         <Route path="*" component={NoMatch} />
       </Route>
     </Router>
