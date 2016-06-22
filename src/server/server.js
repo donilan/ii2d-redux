@@ -1,11 +1,6 @@
 import express from 'express';
 import path from 'path';
 
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-
-import webpackConfig from '../../webpack.config';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 
@@ -18,18 +13,7 @@ import configureStore from '../common/store/configureStore';
 const app = express();
 app.set('views', path.join(__dirname, '../client'));
 app.set('view engine', 'jade');
-
-if(process.env.NODE_ENV !== 'production'){
-  const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    noInfo: true,
-    stats: {
-      colors: true
-    }
-  }));
-  app.use(webpackHotMiddleware(compiler));
-}
+app.use(express.static(path.join(__dirname, '../../public')));
 
 app.get('/*', function (req, res) {
   if(process.env.NODE_ENV === 'production' || process.env.SERVER_RENDERING){
@@ -48,14 +32,19 @@ app.get('/*', function (req, res) {
         );
         res.render('index', {
           content: renderToString(InitialView),
-          state: JSON.stringify(store.getState())
+          state: JSON.stringify(store.getState()),
+          js: '/dist/app.js',
+          css: '/dist/app.css',
         });
       } else {
         res.status(404).send('Not found')
       }
     });
   } else {
-    res.render('index', {content: '', state: JSON.stringify({})});
+    res.render('index', {
+      content: '', state: JSON.stringify({}),
+      js: 'http://localhost:3001/dist/app.js'
+    });
   }
 })
 

@@ -6,7 +6,6 @@ var DEV = process.env.NODE_ENV !== 'production';
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
-  new ExtractTextPlugin("app.css"),
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
@@ -24,17 +23,24 @@ var loaders = [
     test: /\.(png|jpg|ttf|eot|svg|woff2|woff)$/,
     loader: 'url?limit=25000'
   },
-  {
-    test: /\.scss$/,
-    loader: ExtractTextPlugin.extract('style', 'css!sass')
-  }
+
 ];
 
 if(DEV) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
-  entries.push('webpack-hot-middleware/client?reload=true');
+  entries.push('webpack-dev-server/client?http://localhost:3001');
+  entries.push('webpack/hot/only-dev-server');
+  loaders.push({
+    test: /\.scss$/,
+    loaders: ['style', 'css', 'sass']
+  });
 } else {
   plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+  plugins.push(new ExtractTextPlugin("app.css"));
+  loaders.push({
+    test: /\.scss$/,
+    loader: ExtractTextPlugin.extract('style', 'css!sass')
+  });
 }
 
 module.exports = {
@@ -43,7 +49,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'public/dist/'),
     filename: 'app.js',
-    publicPath: '/dist/'
+    publicPath: DEV ? 'http://localhost:3001/dist' : '/dist/'
   },
   module: {loaders: loaders},
   plugins: plugins,
