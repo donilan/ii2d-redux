@@ -71,7 +71,7 @@ module.exports = {
   devtool: DEV ? 'eval' : false,
   entry: entries,
   output: {
-    path: path.join(__dirname, 'public/dist/'),
+    path: path.join(__dirname, 'dist/'),
     filename: 'app.js',
     publicPath: DEV ? 'http://localhost:3001/dist' : '/dist/'
   },
