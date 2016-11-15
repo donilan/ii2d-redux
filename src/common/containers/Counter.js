@@ -1,6 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
 
 import { increase, decrease, asyncIncrease } from '../actions/counter';
 
@@ -18,9 +17,9 @@ export default class Counter extends Component {
       <div className="container">
         <div>
           Counter {this.props.count}
-          <Button onClick={this.props.decrease}>-</Button>
-          <Button onClick={this.props.increase}>+</Button>
-          <Button onClick={this.props.asyncIncrease}>+(Async)</Button>
+          <button onClick={this.props.decrease}>-</button>
+          <button onClick={this.props.increase}>+</button>
+          <button onClick={this.props.asyncIncrease}>+(Async)</button>
         </div>
       </div>
     );

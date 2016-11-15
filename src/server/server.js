@@ -12,7 +12,7 @@ import configureStore from '../common/store/configureStore';
 
 const app = express();
 app.set('views', path.join(__dirname, '../client'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 if(process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../')));

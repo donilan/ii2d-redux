@@ -1,21 +1,27 @@
+import { AppContainer } from 'react-hot-loader';
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
-import { Provider } from 'react-redux';
+import Root from './Root';
 
-import configureStore from '../common/store/configureStore';
-import createRoutes from '../common/routes';
-import "bootstrap-sass/assets/stylesheets/_bootstrap.scss";
-import '../common/style/app.scss';
 
-const store = configureStore(browserHistory, window.__INITIAL_STATE__);
-const history = syncHistoryWithStore(browserHistory, store);
-
+let rootEl = document.getElementById('root');
 ReactDOM.render(
-  <Provider store={store}>
-    {createRoutes(history)}
-  </Provider>,
-  document.getElementById('root')
+  <AppContainer>
+    <Root />
+  </AppContainer>,
+  rootEl
 );
+
+
+if (module.hot) {
+  module.hot.accept('./Root', () => {
+    const NextApp = require('./Root').default;
+    ReactDOM.render(
+      <AppContainer>
+        <NextApp />
+      </AppContainer>,
+      rootEl
+    );
+  });
+}

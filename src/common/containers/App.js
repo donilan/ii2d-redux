@@ -1,30 +1,27 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import {Link} from 'react-router';
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
-import DevTool from './DevTools';
 
 export default class App extends Component {
-  renderDevTool() {
-    return process.env.NODE_ENV === 'production' ? null : <DevTool />;
-  }
   render() {
     return (
       <div>
-        <Navbar>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/">II2D</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav>
+        <nav className="navbar navbar-default">
+          <div className="container-fluid">
+            <div className="navbar-header">
+              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+              <a className="navbar-brand" href="#">II2d</a>
+            </div>
+            <ul className="nav navbar-nav">
               <li><Link to="/counter">Counter</Link></li>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+            </ul>
+          </div>
+        </nav>
         {this.props.children}
-        {this.renderDevTool()}
       </div>
     );
   }
