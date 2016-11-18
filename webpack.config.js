@@ -25,8 +25,8 @@ var loaders = [
 
 if(DEV) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
-  entries.unshift('webpack/hot/only-dev-server');
-  entries.unshift('webpack-dev-server/client?http://localhost:' + (process.env.WEBPACK_PORT || '3001'));
+  entries.unshift('webpack/hot/dev-server');
+  entries.unshift('webpack-hot-middleware/client');
   entries.unshift('react-hot-loader/patch');
   loaders.push({ test: /\.scss$/, loaders: ['style', 'css', 'sass'] });
 } else {
@@ -39,10 +39,16 @@ module.exports = {
   devtool: DEV ? 'eval' : false,
   entry: entries,
   output: {
-    path: path.join(__dirname, 'dist/'),
-    filename: 'app.js',
-    publicPath: DEV ? 'http://localhost:3001/dist' : '/dist/'
+    path: path.join(__dirname, 'public/'),
+    filename: 'bundle.js',
+    publicPath: '/public'
+  },
+  devServer: {
+    headers: { 'Access-Control-Allow-Origin': '*' }
   },
   module: { loaders: loaders },
   plugins: plugins,
+  resolve: {
+    root: path.resolve('./lib'),
+  },
 };
